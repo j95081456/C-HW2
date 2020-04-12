@@ -14,7 +14,7 @@ class element {
     //public : int col , row ;
 };
 class matrix{
-    private : element elementAR[100] ;
+    private : element elementAR[300] ;
               int rows , cols , terms ;
               int state_r = 0, state_c = 0;
     public : //matrix (int r , int c , int b);
@@ -148,12 +148,22 @@ int main(){
     for (int i = 0; i < n1 ; i++){ // n1 map
         //mapcols = map[i].getcols();
         //maprows = map[i].getrows();
-        mapterms = map[i].get_terms();    
-        result = function(puzzle , map[i] ,n ,puzzleterms,mapterms,n ); 
+        mapterms = map[i].get_terms(); 
+        //cout << "gogo--" << n  << endl ;   
+        result = function(puzzle , map[i] ,n ,puzzleterms,mapterms,n );
+        //cout << "gogo" << endl ; 
         if (result == 1){
             cout << "Yes" << endl;
         }
-        else cout << "No" << endl;       
+        else{ cout << "No" << endl;}
+        for (int j = 0; j < n ; j++){  
+            for (int i = 0; i < puzzleterms[n-1]; i++){
+            // cout << n-1 << endl;
+                puzzle[j].set(puzzle[j].getrow(i) - puzzle[j].get_state_r()  , puzzle[j].getcol(i) - puzzle[j].get_state_c(), i ); // shift back
+            //  cout << "**********2" << endl;
+        }
+            puzzle[j].set_state_rc(0,0);
+        }       
     }
     
     //cout << puzzle[0].getrow(1) << puzzle[0].getcol(1) ;
@@ -161,7 +171,7 @@ int main(){
 
 int match(matrix a, matrix b , int terms1 ,int terms2){ //puzzle  map
     int c = 1;
-    //cout << terms1 << " terms " << terms2 << endl;
+   // cout << terms1 << " terms " << terms2 << endl;
     for (int i = 0; i < terms1; i++){
         for (int j = 0; j < terms2; j++){
             //cout << a.getrow(i) << a.getcol(i) << "a,b" << b.getrow(j) << b.getcol(j) << endl ;
@@ -178,42 +188,61 @@ int match(matrix a, matrix b , int terms1 ,int terms2){ //puzzle  map
 
 int function(matrix puzzle[] , matrix map , int n , int puzzleterms[] , int mapterms ,const int num){ // n number of puzzle
     if ( n == 0 ){
-        if (flag == 0) { return 0;}
-        else return 1;
+        /*if (flag == 0) {
+            cout << "gogo1" << endl ; 
+            return 0;
+            } 
+        else*/ return 1;
     }
     else if (n == num+1){
+       /// cout << "gogo2" << n << num << endl ; 
         return 0;
     }
     else {
         flag = 0;
+        //int stored_j , stored_k;
+        //cout << "jjjjjj" << endl ;
+        //cout << map.getcol(0) <<"col and row" << map.getrow(0) << endl;
+        //flag = match(puzzle[n-1], map, puzzleterms[n-1] , mapterms);
+        //cout << "flag" << n-1 << flag << endl ; 
         while (flag == 0) {
+           // cout << puzzle[n-1].get_state_r() << puzzle[n-1].get_state_c() << endl ;
             for (int j = puzzle[n-1].get_state_r(); j <= (map.getrows() - puzzle[n-1].getrows()) ; j++){
                 for (int k = puzzle[n-1].get_state_c(); k <= (map.getcols() - puzzle[n-1].getcols()); k++){
                     for (int i = 0; i < puzzleterms[n-1]; i++){
                         puzzle[n-1].set(puzzle[n-1].getrow(i) + j, puzzle[n-1].getcol(i) + k , i ); // shift forward
                     }
+                   // cout << "puzzle:" << n-1 << "  shift forward" << j << k << endl;
                     flag = match(puzzle[n-1], map, puzzleterms[n-1] , mapterms);
+                    /*if ( (puzzle[n-1].get_state_r() == j) && (puzzle[n-1].get_state_c() == k) ){
+                        if ( (puzzle[n-1].get_state_r() != 0) && (puzzle[n-1].get_state_c() != 0) ){
+                            flag = 0;
+                        }
+                    }*/
                     if (restart == 1){
                         flag = 0;
                         restart = 0;
                     }
+                    //cout << "flag" << flag << endl;
+                    //cout << "**********1" << endl;
                     if (flag == 1){/*cout << "ya" << endl;*/
                          puzzle[n-1].set_state_rc(j , k );
                          break;
                     }
                     for (int i = 0; i < puzzleterms[n-1]; i++){
-                       
+                        //cout << n-1 << endl;
                         puzzle[n-1].set(puzzle[n-1].getrow(i) - j , puzzle[n-1].getcol(i) - k , i ); // shift back
+                      //  cout << "**********2" << endl;
                     }
                 }
-                if (flag == 1){break;}    
+                if (flag == 1){/*cout << "ya2" << endl;*/ break;}    
             }
-            if (flag == 1){break;}
+            if (flag == 1){/*cout << "ya3" << endl;*/ break;}
             else {
                 for (int i = 0; i < puzzleterms[n-1]; i++){
-                       
+                       // cout << n-1 << endl;
                         puzzle[n-1].set(puzzle[n-1].getrow(i) - puzzle[n-1].get_state_r()  , puzzle[n-1].getcol(i) - puzzle[n-1].get_state_c(), i ); // shift back
-    
+                      //  cout << "**********2" << endl;
                 }
                 puzzle[n-1].set_state_rc(0,0);
                 map.set_terms(mapterms - puzzle[n].get_terms());
@@ -224,6 +253,15 @@ int function(matrix puzzle[] , matrix map , int n , int puzzleterms[] , int mapt
         }
         map.add(puzzle[n-1]);
         mapterms = map.get_terms();
+        //cout << "pass" << endl;
+        for (int i = 0 ;i < map.get_terms(); i++){
+            //cout << map.getrow(i) << map.getcol(i) << endl;
+        }
+        //cout << "flag" << flag << endl;
         return function(puzzle, map , n-1 , puzzleterms , mapterms , num);
+        /*if (returnvalue == 0){
+            return function(puzzle, map , n-1 , puzzleterms , mapterms ,state_r , state_c);
+        }
+        else (return 1;)*/
     }
 }

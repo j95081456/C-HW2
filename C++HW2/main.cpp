@@ -153,9 +153,17 @@ int main(){
         result = function(puzzle , map[i] ,n ,puzzleterms,mapterms,n );
         cout << "gogo" << endl ; 
         if (result == 1){
-            cout << "yes" << endl;
+            cout << "Yes" << endl;
         }
-        else cout << "NO" << endl;       
+        else{ cout << "No" << endl;}
+        for (int j = 0; j < n ; j++){  
+            for (int i = 0; i < puzzleterms[n-1]; i++){
+            // cout << n-1 << endl;
+                puzzle[j].set(puzzle[j].getrow(i) - puzzle[j].get_state_r()  , puzzle[j].getcol(i) - puzzle[j].get_state_c(), i ); // shift back
+            //  cout << "**********2" << endl;
+        }
+            puzzle[j].set_state_rc(0,0);
+        }       
     }
     
     //cout << puzzle[0].getrow(1) << puzzle[0].getcol(1) ;
@@ -180,11 +188,11 @@ int match(matrix a, matrix b , int terms1 ,int terms2){ //puzzle  map
 
 int function(matrix puzzle[] , matrix map , int n , int puzzleterms[] , int mapterms ,const int num){ // n number of puzzle
     if ( n == 0 ){
-        if (flag == 0) {
+        /*if (flag == 0) {
             cout << "gogo1" << endl ; 
             return 0;
             } 
-        else return 1;
+        else*/ return 1;
     }
     else if (n == num+1){
         cout << "gogo2" << n << num << endl ; 
